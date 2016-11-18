@@ -62,19 +62,18 @@ _done:
 match:
 	lb $t3, end
 	lb $t4, in_char
-	lb $t5, newline
 	li $t0, 1 # step
-	li $t6, 1
+	li $t5, 1
 	la $t1, string
 	beq $t3, $t4, _done
 
 _match_loop:
 	lb  $t2, ($t1)
 	beq $t2, $t4, _match_ok
-	beq $t2, $t5, _match_failed
-	bge $t6, 100, _match_failed
+	beq $t2, '\n', _match_failed
+	bge $t5, 100, _match_failed
 	add $t1, $t1, $t0
-	addi $t6, $t6, 1
+	addi $t5, $t5, 1
 	j _match_loop
 	
 _match_failed:
@@ -87,7 +86,7 @@ _match_ok:
 	la $a0, success
 	li $v0, 4
 	syscall
-	move $a0, $t6
+	move $a0, $t5
 	li $v0, 1
 	syscall
 	la $a0, newline
